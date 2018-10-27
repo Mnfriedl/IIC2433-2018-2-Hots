@@ -1,3 +1,7 @@
+"""Generates the file hero_names.json with the use of HotsAPI.
+"""
+
+
 import requests
 import json
 
