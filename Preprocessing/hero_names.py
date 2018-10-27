@@ -4,12 +4,13 @@
 
 import requests
 import json
+import unidecode
 
 if __name__ == '__main__':
     heroes = requests.get("https://hotsapi.net/api/v1/heroes")
     hero_names = dict()
     for hero in heroes.json():
-        hero_names[hero['name']] = {
+        hero_names[unidecode.unidecode(hero['name'])] = {
             "short_name": hero["short_name"],
             "attribute_id": hero["attribute_id"]
         }

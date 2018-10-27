@@ -6,10 +6,13 @@ import os
 import json
 import datetime
 import boto3
+import unidecode
 
 
 # Global variables
 S3CLIENT = boto3.client('s3')
+with open("hero_names.json", "r") as file:
+    HERO_NAMES = json.load(file)
 
 
 def date_to_string(date):
@@ -83,9 +86,30 @@ def parse(filename):
     delete_replay()
 
     # Parse the needed data
-    with open("output.json", "r") as file:
-        data = json.load(file)
-    print(data)
+    to_return = {
+        "picks": [],
+        "bans": []
+        }
+    with open("trackerevents.json", "r") as file:
+        events = list()
+        for i, line in enumerate(file):
+            if i in range(10, 26):
+                events.append(json.loads(line))
+    with open("attributeevents.json", "r") as file:
+        attributeevents = json.load(file)["scopes"]
+    for i in events:
+        if i["_event"] == "NNet.Replay.Tracker.SHeroPickedEvent":
+            hero = unidecode.unidecode(i["m_hero"])
+            for j in range(1, 11):
+                if attributeevents[str(j)]["4002"][0]['value'] == HERO_NAMES[hero]['attribute_id']:
+                    to_return["picks"].append({
+                        "hero": hero,
+                        "level": attributeevents[str(j)]["4008"][0]['value']
+                    })
+        elif i["_event"] == "NNet.Replay.Tracker.SHeroBannedEvent":
+            to_return["bans"].append(i["m_hero"])
+
+    return to_return
 
 
 if __name__ == "__main__":
