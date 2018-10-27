@@ -39,6 +39,11 @@ def parse_date(date):
 
     return datetime.datetime.strptime(date, "%Y-%m-%d")
 
+def get_hero_name(name):
+    for key in HERO_NAMES:
+        if name in HERO_NAMES[key]:
+            return key
+
 def download_replay(filename, output_filename="actual_replay.StormReplay"):
     """Uses boto3 to download a .StormReplay file from the HotsAPI Amazon S3 bucket.
     You need to have your AWSAccessKeyId and AWSSecretKey configured in the amazon
