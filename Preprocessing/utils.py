@@ -11,7 +11,7 @@ import psycopg2
 
 # Global variables
 S3CLIENT = boto3.client('s3')
-CONN = psycopg2.connect(host="localhost", database="IIC2433-HOTSY". user="hotsy", password="")
+CONN = psycopg2.connect(host="localhost", database="IIC2433-HOTSY", user="hotsy")
 
 
 def date_to_string(date):
