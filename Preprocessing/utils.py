@@ -53,7 +53,7 @@ def download_replay(filename, output_filename="actual_replay.StormReplay"):
                                 RequestPayer='requester')
     response_content = response['Body'].read()
 
-    with open('./B02.StormReplay', 'wb') as file:
+    with open('./{}'.format(output_filename), 'wb') as file:
         file.write(response_content)
 
 def delete_replay(filename="actual_replay.StormReplay"):
@@ -67,7 +67,12 @@ def delete_replay(filename="actual_replay.StormReplay"):
     os.remove(filename)
 
 def run_heroprotocol(filename="actual_replay.StormReplay"):
-    pass
+    """Runs the Blizzard's heroprotocol parser for .StormReplay files and outputs to output.json
+    
+    Keyword Arguments:
+        filename {str} -- Name of the replay file to be parsed by Blizzard's heroprotocol (default: {"actual_replay.StormReplay"})
+    """
+    subprocess.run("python2 heroprotocol/heroprotocol.py --trackerevents {} --json > output.json".format(filename), shell=True)
 
 def parse(filename):
     # Generate the needed files
@@ -77,8 +82,11 @@ def parse(filename):
     delete_replay()
 
     # Parse the needed data
+    with open("output.json", "r") as file:
+        data = json.load(file)
+    print(data)
 
 
 if __name__ == "__main__":
     # Useless code for testing purposes
-    print("Working!")
+    parse("00488be0-7f21-f1c5-335e-133e12be4023.StormReplay")
