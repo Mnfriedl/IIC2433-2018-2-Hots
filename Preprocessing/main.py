@@ -33,21 +33,54 @@ while True:
             break
         for replay in replays:
             if replay['game_type'] in ['TeamLeague', 'HeroLeague', 'UnrankedDraft']:  # We are only interested on replays with draft
+                print(replay["filename"])
                 picks_and_bans = utils.parse(replay["filename"] + ".StormReplay")
+                print(picks_and_bans)
+                if len(picks_and_bans["picks"]) != 10:
+                    print("Incorrect number of pick")
+                    continue
+                if len(picks_and_bans["bans"]) != 6:
+                    for i in range(6 - len(picks_and_bans["bans"])):
+                        picks_and_bans["bans"].append(None)
                 # Add the data into the databse
-                CURSOR.execute("""INSERT INTO replay 
+                query = """INSERT INTO replay 
                 (game_type, map, ban1, ban2, ban3, ban4, ban5, ban6,
                 pick1, pick2, pick3, pick4, pick5, pick6, pick7, pick8, pick9, pick10,
                 level1, level2, level3, level4, level5, level6, level7, level8, level9, level10) 
                 VALUES
                 (%s, %s, %s, %s, %s, %s, %s, %s,
                 %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", 
-                (replay["game_type"], replay["game_map"], picks_and_bans["bans"][0], picks_and_bans["bans"][1], picks_and_bans["bans"][2], picks_and_bans["bans"][3], picks_and_bans["bans"][4], picks_and_bans["bans"][5],
-                picks_and_bans["picks"][0]['hero'], picks_and_bans["picks"][1]['hero'], picks_and_bans["picks"][2]['hero'], picks_and_bans["picks"][3]['hero'], picks_and_bans["picks"][4]['hero'],
-                picks_and_bans["picks"][5]['hero'], picks_and_bans["picks"][6]['hero'], picks_and_bans["picks"][7]['hero'], picks_and_bans["picks"][8]['hero'], picks_and_bans["picks"][9]['hero'],
-                picks_and_bans["picks"][0]['level'], picks_and_bans["picks"][1]['level'], picks_and_bans["picks"][2]['level'], picks_and_bans["picks"][3]['level'], picks_and_bans["picks"][4]['level'],
-                picks_and_bans["picks"][5]['level'], picks_and_bans["picks"][6]['level'], picks_and_bans["picks"][7]['level'], picks_and_bans["picks"][8]['level'], picks_and_bans["picks"][9]['level']))
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                data = (replay["game_type"],
+                replay["game_map"]["name"],
+                picks_and_bans["bans"][0],
+                picks_and_bans["bans"][1],
+                picks_and_bans["bans"][2],
+                picks_and_bans["bans"][3],
+                picks_and_bans["bans"][4],
+                picks_and_bans["bans"][5],
+                picks_and_bans["picks"][0]['hero'],
+                picks_and_bans["picks"][1]['hero'],
+                picks_and_bans["picks"][2]['hero'],
+                picks_and_bans["picks"][3]['hero'],
+                picks_and_bans["picks"][4]['hero'],
+                picks_and_bans["picks"][5]['hero'],
+                picks_and_bans["picks"][6]['hero'],
+                picks_and_bans["picks"][7]['hero'],
+                picks_and_bans["picks"][8]['hero'],
+                picks_and_bans["picks"][9]['hero'],
+                picks_and_bans["picks"][0]['level'],
+                picks_and_bans["picks"][1]['level'],
+                picks_and_bans["picks"][2]['level'],
+                picks_and_bans["picks"][3]['level'],
+                picks_and_bans["picks"][4]['level'],
+                picks_and_bans["picks"][5]['level'],
+                picks_and_bans["picks"][6]['level'],
+                picks_and_bans["picks"][7]['level'],
+                picks_and_bans["picks"][8]['level'],
+                picks_and_bans["picks"][9]['level'])
+                CURSOR.execute(query, data)
+                CONN.commit()
                 print("replay added!")
         actual_page += 1
 

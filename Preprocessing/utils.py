@@ -6,7 +6,6 @@ import os
 import json
 import datetime
 import boto3
-import unidecode
 
 
 # Global variables
@@ -104,19 +103,21 @@ def parse(filename):
         attributeevents = json.load(file)["scopes"]
     for i in events:
         if i["_event"] == "NNet.Replay.Tracker.SHeroPickedEvent":
-            hero = unidecode.unidecode(i["m_hero"])
+            hero = get_hero_name(i["m_hero"].lower().replace(" ", ""))
             for j in range(1, 11):
-                if attributeevents[str(j)]["4002"][0]['value'] == HERO_NAMES[hero]['attribute_id']:
+                if get_hero_name(attributeevents[str(j)]["4002"][0]['value'].lower().replace(" ", "")) == hero:
                     to_return["picks"].append({
                         "hero": hero,
-                        "level": attributeevents[str(j)]["4008"][0]['value']
+                        "level": int(attributeevents[str(j)]["4008"][0]['value'])
                     })
         elif i["_event"] == "NNet.Replay.Tracker.SHeroBannedEvent":
-            to_return["bans"].append(i["m_hero"])
+            to_return["bans"].append(get_hero_name(i["m_hero"].lower().replace(" ", "")))
+    os.remove("attributeevents.json")
+    os.remove("trackerevents.json")
 
     return to_return
 
 
 if __name__ == "__main__":
     # Useless code for testing purposes
-    parse("00488be0-7f21-f1c5-335e-133e12be4023.StormReplay")
+    print(parse("7d2903a8-029b-d747-f418-dfd538151866.StormReplay"))
