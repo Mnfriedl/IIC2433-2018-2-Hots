@@ -6,13 +6,10 @@ import os
 import json
 import datetime
 import boto3
-import psycopg2
 
 
 # Global variables
 S3CLIENT = boto3.client('s3')
-CONN = psycopg2.connect(host="localhost", database="IIC2433-HOTSY", user="hotsy")
-CURSOR = CONN.cursor()
 
 
 def date_to_string(date):
@@ -75,7 +72,8 @@ def run_heroprotocol(filename="actual_replay.StormReplay"):
     Keyword Arguments:
         filename {str} -- Name of the replay file to be parsed by Blizzard's heroprotocol (default: {"actual_replay.StormReplay"})
     """
-    subprocess.run("python2 heroprotocol/heroprotocol.py --trackerevents {} --json > output.json".format(filename), shell=True)
+    subprocess.run("python2 heroprotocol/heroprotocol.py --attributeevents {} --json > attributeevents.json".format(filename), shell=True)
+    subprocess.run("python2 heroprotocol/heroprotocol.py --trackerevents {} --json > trackerevents.json".format(filename), shell=True)
 
 def parse(filename):
     # Generate the needed files

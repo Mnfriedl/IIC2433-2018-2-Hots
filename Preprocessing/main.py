@@ -5,6 +5,11 @@ HotsAPI.
 import requests
 import utils
 import datetime
+import psycopg2
+
+
+CONN = psycopg2.connect(host="localhost", database="IIC2433-HOTSY", user="hotsy", password="hotsy")
+CURSOR = CONN.cursor()
 
 
 actual_date = None
