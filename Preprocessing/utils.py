@@ -39,6 +39,17 @@ def parse_date(date):
     return datetime.datetime.strptime(date, "%Y-%m-%d")
 
 def get_hero_name(name):
+    """It takes the name of a hero in any format, and returns a standarized name
+    for that hero. It uses the hero_names.json file, which was built using the
+    hotsapi heroes endpoint, and then some name variations were added by hand later.
+    
+    Arguments:
+        name {string} -- Name of the hero
+    
+    Returns:
+        string -- Standarized name of the hero
+    """
+
     for key in HERO_NAMES:
         if name in HERO_NAMES[key]:
             return key
@@ -83,6 +94,18 @@ def run_heroprotocol(filename="actual_replay.StormReplay"):
     subprocess.run("python2 heroprotocol/heroprotocol.py --trackerevents {} --json > trackerevents.json".format(filename), shell=True)
 
 def parse(filename):
+    """Function that encapsulates every task needed to be done in order to parse a replay.
+    It will download the file from the amazon s3 bucket, run blizzard's heroprotocol, delete
+    the replay file to save space (each replay is like 1MB - 2MB), parse the relevant information
+    (picked heroes and hero level, and also banned heroes, all in event order).
+    
+    Arguments:
+        filename {string} -- Name of the file stored in the amazon S3 bucket of hotsapi. 
+    
+    Returns:
+        [dict] -- Dictionary containing picks and bans in happening order. Picks also include hero level.
+    """
+
     # Generate the needed files
     download_replay(filename)
     run_heroprotocol()
@@ -120,4 +143,4 @@ def parse(filename):
 
 if __name__ == "__main__":
     # Useless code for testing purposes
-    print(parse("7d2903a8-029b-d747-f418-dfd538151866.StormReplay"))
+    print(parse("9fcbc5c2-8861-52f4-f9b5-36305c58845b.StormReplay"))

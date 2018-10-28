@@ -34,7 +34,11 @@ while True:
         for replay in replays:
             if replay['game_type'] in ['TeamLeague', 'HeroLeague', 'UnrankedDraft']:  # We are only interested on replays with draft
                 print(replay["filename"])
-                picks_and_bans = utils.parse(replay["filename"] + ".StormReplay")
+                try:
+                    picks_and_bans = utils.parse(replay["filename"] + ".StormReplay")
+                except Exception as error:
+                    print(error)
+                    continue
                 print(picks_and_bans)
                 if len(picks_and_bans["picks"]) != 10:
                     print("Incorrect number of pick")
@@ -86,4 +90,3 @@ while True:
 
     actual_date = actual_date - datetime.timedelta(days=1)
     # Should probably add a finishing condition here
-    break
