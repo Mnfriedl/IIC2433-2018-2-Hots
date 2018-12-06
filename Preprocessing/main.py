@@ -32,7 +32,7 @@ while True:
             "page": actual_page,
             "start_date": utils.date_to_string(actual_date),
             "end_date": utils.date_to_string(actual_date + datetime.timedelta(days=1))
-            })
+        })
         replays = replays_info.json()["replays"]
         if len(replays) == 0:
             break
