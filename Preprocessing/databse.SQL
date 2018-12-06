@@ -3,6 +3,7 @@ CREATE TABLE public.replay
     id serial NOT NULL,
     map text NOT NULL,
     game_type text NOT NULL,
+    winner integer,
     ban1 text,
     ban2 text,
     ban3 text,

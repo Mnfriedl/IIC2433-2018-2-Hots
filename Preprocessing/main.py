@@ -27,7 +27,12 @@ while True:
     # Get the info from the API
     actual_page = 1
     while True:
-        replays_info = requests.get("https://hotsapi.net/api/v1/replays/paged", params={"page": actual_page, "start_date": utils.date_to_string(actual_date)})
+        print("Requesting from {} to {} in page {}".format(utils.date_to_string(actual_date), utils.date_to_string(actual_date + datetime.timedelta(days=1)), actual_page))
+        replays_info = requests.get("https://hotsapi.net/api/v1/replays/paged", params={
+            "page": actual_page,
+            "start_date": utils.date_to_string(actual_date),
+            "end_date": utils.date_to_string(actual_date + datetime.timedelta(days=1))
+            })
         replays = replays_info.json()["replays"]
         if len(replays) == 0:
             break
@@ -48,15 +53,16 @@ while True:
                         picks_and_bans["bans"].append(None)
                 # Add the data into the databse
                 query = """INSERT INTO replay 
-                (game_type, map, ban1, ban2, ban3, ban4, ban5, ban6,
+                (game_type, map, winner, ban1, ban2, ban3, ban4, ban5, ban6,
                 pick1, pick2, pick3, pick4, pick5, pick6, pick7, pick8, pick9, pick10,
                 level1, level2, level3, level4, level5, level6, level7, level8, level9, level10) 
                 VALUES
-                (%s, %s, %s, %s, %s, %s, %s, %s,
+                (%s, %s, %s, %s, %s, %s, %s, %s, %s,
                 %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
                 %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
                 data = (replay["game_type"],
                 replay["game_map"]["name"],
+                picks_and_bans["winner"],
                 picks_and_bans["bans"][0],
                 picks_and_bans["bans"][1],
                 picks_and_bans["bans"][2],
@@ -88,5 +94,6 @@ while True:
                 print("replay added!")
         actual_page += 1
 
+    # Move to previous day
     actual_date = actual_date - datetime.timedelta(days=1)
     # Should probably add a finishing condition here

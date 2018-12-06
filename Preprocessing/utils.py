@@ -115,15 +115,47 @@ def parse(filename):
     # Parse the needed data
     to_return = {
         "picks": [],
-        "bans": []
+        "bans": [],
+        "winner": None
         }
     with open("trackerevents.json", "r") as file:
         events = list()
-        for i, line in enumerate(file):
-            if i in range(10, 26):
-                events.append(json.loads(line))
+        lines = file.readlines()
+        for line in lines[10: 26]:
+            events.append(json.loads(line))
+    
+        # Start from the bottom up to look for the winner
+        i = len(lines) - 1
+        while True:
+            line = json.loads(lines[i])
+            should_break = False
+            if line["_eventid"] == 10 and line["m_eventName"] == "EndOfGameTalentChoices":
+                # Get if the hero won or not
+                winner = None
+                player_id = None
+                for j in line["m_stringData"]:
+                    if j["m_key"] == "Win/Loss":
+                        winner = 1 if j["m_value"] == "Win" else 0
+                for j in line["m_intData"]:
+                    if j["m_key"] == "PlayerID":
+                        player_id = j["m_value"]
+                if winner and player_id:
+                    should_break = True
+                    break
+            if should_break:
+                break
+            i -= 1
+        if player_id in [1, 4, 5, 8, 9]:
+            to_return['winner'] = winner
+        else:
+            if winner == 1:
+                to_return['winner'] = 0
+            else:
+                to_return['winner'] = 1
+
     with open("attributeevents.json", "r") as file:
         attributeevents = json.load(file)["scopes"]
+
     for i in events:
         if i["_event"] == "NNet.Replay.Tracker.SHeroPickedEvent":
             hero = get_hero_name(i["m_hero"].lower().replace(" ", ""))
@@ -143,4 +175,4 @@ def parse(filename):
 
 if __name__ == "__main__":
     # Useless code for testing purposes
-    print(parse("9fcbc5c2-8861-52f4-f9b5-36305c58845b.StormReplay"))
+    print(parse("94f977fd-38a6-5164-5c7e-2cc5be357bfe.StormReplay"))
