@@ -108,3 +108,5 @@ Preprocessing/last_date.txt
 Preprocessing/output.json
 Preprocessing/trackerevents.json
 Preprocessing/attributeevents.json
+Models/dataset.npy
+Models/classifications.npy
