@@ -1,11 +1,9 @@
-# IIC2433-2018-2-Hots
+# IIC2433-2018-2-HOTS
 
 ###### Authors: 
 
 - Maximiliano Friedl ([Mnfriedl](https://github.com/Mnfriedl))
-- Felipe Gomez ([Fagomez2](https://github.com/fagomez2))
-
-
+- Felipe Gómez ([Fagomez2](https://github.com/fagomez2))
 
 ## Needed dependencies
 
@@ -27,8 +25,10 @@ We are using Blizzard's [heroprotocol](https://github.com/Blizzard/heroprotocol)
 - `awscli`: for this, you need to run `pip install awscli` and then `aws configure`, or you won't be able to download files from the Amazon AWS S3 bucket. For more information, read [this](https://aws.amazon.com/es/cli/) and [this](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
 
 #### Models:
-
+- `keras`
 - `pandas`
 - `numpy`
 - `sklearn`
 
+#### Database:
+- `postresql`
